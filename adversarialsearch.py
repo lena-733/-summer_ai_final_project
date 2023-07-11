@@ -3,7 +3,7 @@ from typing import Callable
 from adversarialsearchproblem import (
     Action,
     AdversarialSearchProblem,
-    State as GameState,
+    GameState,
 )
 
 
@@ -17,8 +17,43 @@ def minimax(asp: AdversarialSearchProblem[GameState, Action]) -> Action:
     Output:
         an action (an element of asp.get_available_actions(asp.get_start_state()))
     """
-    ...
+    state = AdversarialSearchProblem.get_start_state()
+    player = GameState.player_to_move()
+    bestMove = -1*float("inf")
+    bestVal = None
+    for a in AdversarialSearchProblem.get_available_actions(state):
+        next_state = AdversarialSearchProblem.transition(state, a)
+        val = min_helper(next_state, player)
+        if val > bestVal:
+            bestVal = val
+            bestMove = a
+    return bestMove
 
+
+
+    ...
+def max_helper(state, player):
+    if AdversarialSearchProblem.is_terminal_state(state):
+        e = AdversarialSearchProblem.evaluate_terminal(state)
+        return e[player]
+    v = -1*float("inf")
+    for a in AdversarialSearchProblem.get_available_actions(state):
+        next_state = AdversarialSearchProblem.transition(state, a)
+        v= max(v, min_helper(next_state, player))
+        return v
+    
+
+def min_helper(state, player):
+    if AdversarialSearchProblem.is_terminal_state(state):
+        e = AdversarialSearchProblem.evaluate_terminal(state)
+        return e[player]
+    v = float("inf")
+    for a in AdversarialSearchProblem.get_available_actions(state):
+        next_state = AdversarialSearchProblem.transition(state, a)
+        v= min(v, max_helper(next_state, player))
+        return v
+
+""" guys psuedocode """
 
 def alpha_beta(asp: AdversarialSearchProblem[GameState, Action]) -> Action:
     """
