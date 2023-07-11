@@ -18,7 +18,26 @@ def minimax(asp: AdversarialSearchProblem[GameState, Action]) -> Action:
         an action (an element of asp.get_available_actions(asp.get_start_state()))
     """
     ...
+def max_helper(state, player):
+    if terminal:
+        e = evaluate_leaf()
+        return e[player]
+    v = -infinity
+    for a in actions:
+        next_state = transitions(state, a)
+        v= max(v, min_helper(next_state, player)
+        return v
+def min_helper(state, player):
+    if terminal:
+        e = evaluate_leaf()
+        return e[player]
+    v = infinity
+    for a in actions:
+        next_state = transitions(state, a)
+        v= min(v, max_helper(next_state, player)
+        return v
 
+""" guys psuedocode """
 
 def alpha_beta(asp: AdversarialSearchProblem[GameState, Action]) -> Action:
     """
