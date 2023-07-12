@@ -3,8 +3,10 @@ from typing import Callable
 from adversarialsearchproblem import (
     Action,
     AdversarialSearchProblem,
-    GameState,
+    State as GameState,
 )
+
+from asps.gamedag import DAGState, GameDAG
 
 
 def minimax(asp: AdversarialSearchProblem[GameState, Action]) -> Action:
@@ -19,28 +21,27 @@ def minimax(asp: AdversarialSearchProblem[GameState, Action]) -> Action:
     """
     state = asp.get_start_state()
     player = state.player_to_move()
-    bestMove = -1*float("inf")
-    bestVal = None
+    bestMove = None
+    bestVal = float("-inf")
     for a in asp.get_available_actions(state):
         next_state = asp.transition(state, a)
-        val = min_helper(next_state, player)
+        val = min_helper(asp, next_state, player)
         if val > bestVal:
-            bestVal = val
             bestMove = a
+            bestVal = val
+
     return bestMove
 
 
-
-    ...
 def max_helper(asp, state, player):
     if asp.is_terminal_state(state):
         e = asp.evaluate_terminal(state)
         return e[player]
-    v = -1*float("inf")
+    v = float("-inf")
     for a in asp.get_available_actions(state):
         next_state = asp.transition(state, a)
-        v= max(v, min_helper(next_state, player))
-        return v
+        v= max(v, min_helper(asp, next_state, player))
+    return v
     
 
 def min_helper(asp, state, player):
@@ -50,8 +51,8 @@ def min_helper(asp, state, player):
     v = float("inf")
     for a in asp.get_available_actions(state):
         next_state = asp.transition(state, a)
-        v= min(v, max_helper(next_state, player))
-        return v
+        v= min(v, max_helper(asp, next_state, player))
+    return v
 
 """ guys psuedocode """
 
